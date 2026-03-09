@@ -1,0 +1,39 @@
+# Dependencies
+node_modules/
+**/node_modules/
+package-lock.json
+
+# Environment
+.env
+**/.env
+
+# Hyperledger Fabric Generated
+network/organizations/
+network/channel-artifacts/
+network/*.block
+network/*.tx
+network/*.tar.gz
+network/orderer_log.txt
+network/ledger_dump.txt
+network/ledger_raw.json
+network/committed.txt
+network/installed.txt
+
+# Wallets and Keys
+wallet/
+**/wallet/
+server/connection.json
+
+# OS/IDEs
+.DS_Store
+.idea/
+.vscode/
+
+# Build artifacts & Binaries
+dist/
+build/
+**/*.exe
+**/*.tar.gz
+**/vendor/
+client/.next/
+client/out/

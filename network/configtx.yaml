@@ -1,0 +1,203 @@
+Organizations:
+    - &OrdererOrg
+        Name: OrdererOrg
+        ID: OrdererMSP
+        MSPDir: ./organizations/ordererOrganizations/orderer.example.com/msp
+        Policies:
+            Readers:
+                Type: Signature
+                Rule: "OR('OrdererMSP.member')"
+            Writers:
+                Type: Signature
+                Rule: "OR('OrdererMSP.member')"
+            Admins:
+                Type: Signature
+                Rule: "OR('OrdererMSP.admin')"
+        OrdererEndpoints:
+            - orderer0.orderer.example.com:7050
+            - orderer1.orderer.example.com:7050
+            - orderer2.orderer.example.com:7050
+
+    - &GovtOrg
+        Name: GovtOrg
+        ID: GovtMSP
+        MSPDir: ./organizations/peerOrganizations/govt.example.com/msp
+        Policies:
+            Readers:
+                Type: Signature
+                Rule: "OR('GovtMSP.admin', 'GovtMSP.peer', 'GovtMSP.client')"
+            Writers:
+                Type: Signature
+                Rule: "OR('GovtMSP.admin', 'GovtMSP.client')"
+            Admins:
+                Type: Signature
+                Rule: "OR('GovtMSP.admin')"
+            Endorsement:
+                Type: Signature
+                Rule: "OR('GovtMSP.peer')"
+        AnchorPeers:
+            - Host: peer0.govt.example.com
+              Port: 7051
+
+    - &DistrictOrg
+        Name: DistrictOrg
+        ID: DistrictMSP
+        MSPDir: ./organizations/peerOrganizations/district.example.com/msp
+        Policies:
+            Readers:
+                Type: Signature
+                Rule: "OR('DistrictMSP.admin', 'DistrictMSP.peer', 'DistrictMSP.client')"
+            Writers:
+                Type: Signature
+                Rule: "OR('DistrictMSP.admin', 'DistrictMSP.client')"
+            Admins:
+                Type: Signature
+                Rule: "OR('DistrictMSP.admin')"
+            Endorsement:
+                Type: Signature
+                Rule: "OR('DistrictMSP.peer')"
+        AnchorPeers:
+            - Host: peer0.district.example.com
+              Port: 8051
+
+    - &ShopOrg
+        Name: ShopOrg
+        ID: ShopMSP
+        MSPDir: ./organizations/peerOrganizations/shop.example.com/msp
+        Policies:
+            Readers:
+                Type: Signature
+                Rule: "OR('ShopMSP.admin', 'ShopMSP.peer', 'ShopMSP.client')"
+            Writers:
+                Type: Signature
+                Rule: "OR('ShopMSP.admin', 'ShopMSP.client')"
+            Admins:
+                Type: Signature
+                Rule: "OR('ShopMSP.admin')"
+            Endorsement:
+                Type: Signature
+                Rule: "OR('ShopMSP.peer')"
+        AnchorPeers:
+            - Host: peer0.shop.example.com
+              Port: 9051
+
+Capabilities:
+    Channel: &ChannelCapabilities
+        V2_0: true
+    Orderer: &OrdererCapabilities
+        V2_0: true
+    Application: &ApplicationCapabilities
+        V2_0: true
+
+Application: &ApplicationDefaults
+    Organizations:
+    Policies:
+        Readers:
+            Type: ImplicitMeta
+            Rule: "ANY Readers"
+        Writers:
+            Type: ImplicitMeta
+            Rule: "ANY Writers"
+        Admins:
+            Type: ImplicitMeta
+            Rule: "ANY Admins"
+        LifecycleEndorsement:
+            Type: ImplicitMeta
+            Rule: "MAJORITY Endorsement"
+        Endorsement:
+            Type: ImplicitMeta
+            Rule: "MAJORITY Endorsement"
+    Capabilities:
+        <<: *ApplicationCapabilities
+
+Orderer: &OrdererDefaults
+    OrdererType: etcdraft
+    Addresses:
+        - orderer0.orderer.example.com:7050
+        - orderer1.orderer.example.com:7050
+        - orderer2.orderer.example.com:7050
+    EtcdRaft:
+        Consenters:
+            - Host: orderer0.orderer.example.com
+              Port: 7050
+              ClientTLSCert: ./organizations/ordererOrganizations/orderer.example.com/orderers/orderer0.orderer.example.com/tls/server.crt
+              ServerTLSCert: ./organizations/ordererOrganizations/orderer.example.com/orderers/orderer0.orderer.example.com/tls/server.crt
+            - Host: orderer1.orderer.example.com
+              Port: 7050
+              ClientTLSCert: ./organizations/ordererOrganizations/orderer.example.com/orderers/orderer1.orderer.example.com/tls/server.crt
+              ServerTLSCert: ./organizations/ordererOrganizations/orderer.example.com/orderers/orderer1.orderer.example.com/tls/server.crt
+            - Host: orderer2.orderer.example.com
+              Port: 7050
+              ClientTLSCert: ./organizations/ordererOrganizations/orderer.example.com/orderers/orderer2.orderer.example.com/tls/server.crt
+              ServerTLSCert: ./organizations/ordererOrganizations/orderer.example.com/orderers/orderer2.orderer.example.com/tls/server.crt
+    BatchTimeout: 2s
+    BatchSize:
+        MaxMessageCount: 10
+        AbsoluteMaxBytes: 99 MB
+        PreferredMaxBytes: 512 KB
+    Organizations:
+    Policies:
+        Readers:
+            Type: ImplicitMeta
+            Rule: "ANY Readers"
+        Writers:
+            Type: ImplicitMeta
+            Rule: "ANY Writers"
+        Admins:
+            Type: ImplicitMeta
+            Rule: "ANY Admins"
+        BlockValidation:
+            Type: ImplicitMeta
+            Rule: "ANY Writers"
+
+Channel: &ChannelDefaults
+    Policies:
+        Readers:
+            Type: ImplicitMeta
+            Rule: "ANY Readers"
+        Writers:
+            Type: ImplicitMeta
+            Rule: "ANY Writers"
+        Admins:
+            Type: ImplicitMeta
+            Rule: "ANY Admins"
+    Capabilities:
+        <<: *ChannelCapabilities
+
+Profiles:
+    TwoOrgsOrdererGenesis:
+        <<: *ChannelDefaults
+        Orderer:
+            <<: *OrdererDefaults
+            Organizations:
+                - *OrdererOrg
+            Capabilities:
+                <<: *OrdererCapabilities
+        Consortiums:
+            RationConsortium:
+                Organizations:
+                    - *GovtOrg
+                    - *DistrictOrg
+                    - *ShopOrg
+
+    GovtDistrictChannel:
+        Consortium: RationConsortium
+        <<: *ChannelDefaults
+        Application:
+            <<: *ApplicationDefaults
+            Organizations:
+                - *GovtOrg
+                - *DistrictOrg
+            Capabilities:
+                <<: *ApplicationCapabilities
+
+    DistrictShopChannel:
+        Consortium: RationConsortium
+        <<: *ChannelDefaults
+        Application:
+            <<: *ApplicationDefaults
+            Organizations:
+                - *DistrictOrg
+                - *ShopOrg
+            Capabilities:
+                <<: *ApplicationCapabilities
