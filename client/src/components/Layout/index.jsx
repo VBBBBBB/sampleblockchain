@@ -5,6 +5,9 @@ import Dashboard from '../../pages/Dashboard';
 import StockManager from '../../pages/StockManager';
 import IssueRation from '../../pages/IssueRation';
 import AuditLogs from '../../pages/AuditLogs';
+import FraudAlerts from '../../pages/FraudAlerts';
+import TransferStock from '../../pages/TransferStock';
+import OnboardShop from '../../pages/OnboardShop';
 
 const drawerWidth = 240;
 
@@ -17,11 +20,13 @@ const Layout = () => {
         navigate('/');
     };
 
-    // RBAC: Logic to filter sidebar items
+    // RBAC: Logic to filter sidebar items // Added the new pages with roles
     const allItems = [
         { text: 'Dashboard', icon: '📊', path: '/', roles: ['Govt', 'District', 'Shop'] },
         { text: 'Stock Management', icon: '📦', path: '/stock', roles: ['Govt'] },
-        { text: 'Issue Ration', icon: '🏪', path: '/issue', roles: ['Shop'] },
+        { text: 'Transfer Custody', icon: '🚚', path: '/transfer', roles: ['Govt', 'District'] },
+        { text: 'Onboard Shop', icon: '🏪', path: '/onboard', roles: ['Govt', 'District'] },
+        { text: 'Issue Ration', icon: '🛒', path: '/issue', roles: ['Shop'] },
         { text: 'Audit Logs', icon: '📜', path: '/audit', roles: ['Govt', 'District'] },
         { text: 'Fraud Alerts', icon: '⚠️', path: '/fraud', roles: ['Govt'] },
     ];
@@ -32,7 +37,6 @@ const Layout = () => {
 
     return (
         <Box sx={{ display: 'flex' }}>
-            {/* 2️⃣ Top Header Bar */}
             <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1, bgcolor: '#ffffff', color: '#333', boxShadow: '0 2px 10px rgba(0,0,0,0.05)' }}>
                 <Toolbar>
                     <Box sx={{ mr: 2, fontSize: '1.5rem' }}>🛡️</Box>
@@ -40,7 +44,6 @@ const Layout = () => {
                         Enterprise Ration Chain
                     </Typography>
 
-                    {/* User Profile & Logout */}
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
                         <Box sx={{ textAlign: 'right', mr: 2, display: { xs: 'none', sm: 'block' } }}>
                             <Typography variant="subtitle2" sx={{ fontWeight: 'bold', color: '#1976d2' }}>
@@ -66,7 +69,6 @@ const Layout = () => {
                 </Toolbar>
             </AppBar>
 
-            {/* 3️⃣ Sidebar Navigation */}
             <Drawer
                 variant="permanent"
                 sx={{
@@ -98,7 +100,6 @@ const Layout = () => {
                         ))}
                     </List>
                 </Box>
-                {/* Footer in Sidebar */}
                 <Box sx={{ position: 'absolute', bottom: 0, width: '100%', p: 2, borderTop: '1px solid #f0f0f0', bgcolor: '#fafafa' }}>
                     <Typography variant="caption" color="text.secondary" display="block" align="center">
                         v2.4.0 (Production)
@@ -109,17 +110,16 @@ const Layout = () => {
                 </Box>
             </Drawer>
 
-            {/* Main Content Area */}
             <Box component="main" sx={{ flexGrow: 1, p: 3, bgcolor: '#f4f6f8', minHeight: '100vh' }}>
                 <Toolbar />
                 <Routes>
                     <Route path="/" element={<Dashboard />} />
-
-                    {/* Protected Routes Checking */}
                     {allowedItems.find(i => i.path === '/stock') && <Route path="/stock" element={<StockManager />} />}
+                    {allowedItems.find(i => i.path === '/transfer') && <Route path="/transfer" element={<TransferStock />} />}
+                    {allowedItems.find(i => i.path === '/onboard') && <Route path="/onboard" element={<OnboardShop />} />}
                     {allowedItems.find(i => i.path === '/issue') && <Route path="/issue" element={<IssueRation />} />}
                     {allowedItems.find(i => i.path === '/audit') && <Route path="/audit" element={<AuditLogs />} />}
-
+                    {allowedItems.find(i => i.path === '/fraud') && <Route path="/fraud" element={<FraudAlerts />} />}
                     <Route path="*" element={<Typography variant="h5" color="error">403 Access Denied</Typography>} />
                 </Routes>
             </Box>

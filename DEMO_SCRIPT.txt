@@ -1,0 +1,72 @@
+# The Ultimate Trust Anchor Demo Flow: Hyperledger Fabric Supply Chain
+
+**Objective:** To visually prove to the audience that your system is a true decentralized blockchain application via Role-Based Access Control (RBAC) enforcing mathematical laws, and NOT just a traditional centralized database interface.
+
+## PREREQUISITE SETUP
+1. Start your `network` via Docker (`./restore_network.ps1`).
+2. Have your `server` running (`npm run dev`).
+3. Have your `client` running (`npm run dev`).
+4. **Important:** Open your Chrome browser. Open a normal window, a second session (maybe Microsoft Edge), and a third session (an Incognito window). Size them side-by-side on your screen so the audience can watch the real-time block propagation. 
+
+### Identity Credentials
+*   **Government Node:** `admin` / `password123`
+*   **District Node:** `district_01` / `password123`
+*   **Retail Shop Node:** `shop_01` / `password123`
+
+---
+
+## ACT I: The Government Creator (Window 1)
+**Identity:** Government Authority (`admin`)
+**Context to Audience:** The Government has maximum visibility and the sole authority to digitally ‘Mint’ new agricultural commodities onto the blockchain ecosystem.
+
+1. **Login** to Window 1 as `admin`.
+2. **Observe:** Point out the Government dashboard KPIs (Global Reserves, Active Batches) and the "Trust Anchor" on the right sidebar showing connection via the `GovtAdmin` identity node.
+3. **Action:** Navigate to `Stock Management`.
+4. **Action:** Mint a new batch:
+   *   **Batch ID:** `CROP_WHEAT_XYZ`
+   *   **Commodity:** Wheat (Grade A)
+   *   **Quantity:** 50
+5. **Action:** Navigate to `Transfer Custody`. Select the `CROP_WHEAT_XYZ` batch and execute a cryptographic transfer down out of the government vault into the regional hub: `district_01`.
+
+---
+
+## ACT II: The Middleman Conduit (Window 2)
+**Identity:** District Warehouse (`district_01`)
+**Context to Audience:** This regional hub cannot magically create stock, nor can it distribute it directly to end citizens. It is strictly a transit point. Notice the UI physically enforces these mathematical chaincode restrictions.
+
+1. **Login** to Window 2 as `district_01`.
+2. **Observe:** Look at the KPI dashboard. The District does not see the entire state’s 30,000kg grain pool; they *only* see the `CROP_WHEAT_XYZ` batch that was sent explicitly to them.
+3. **Action:** Navigate to `Transfer Custody`.
+4. **Action:** Select `CROP_WHEAT_XYZ` and hand over custody down to the local retail endpoint: `shop_01`.
+5. **Observe:** The batch instantly vanishes from the District's table view. Tell the audience, *"I just mathematically lost custody of the asset. The chaincode will instantly reject any attempt I make to modify or transfer it again."*
+
+---
+
+## ACT III: The Retail Distribution (Window 3)
+**Identity:** Local Shop (`shop_01`)
+**Context to Audience:** The final endpoint. The shop is bound by the smart contract; they can only distribute chunks of the stock mathematically assigned to them, and they cannot duplicate or reverse transfers.
+
+1. **Login** to Window 3 as `shop_01`.
+2. **Observe:** The `CROP_WHEAT_XYZ` batch has arrived in the Shop's real-time ledger space. Notice there is no "Transfer Custody" or "Mint New Asset" tab on the left sidebar.
+3. **Action:** Click the `Distribute Ration` button (or navigate to `Issue Ration`).
+   *   Note that the `Shop ID` is already locked to your exact identity.
+   *   **Citizen Hash/ID:** `CITIZEN_HASH_99`
+   *   **Commodity:** Wheat
+   *   **Quantity:** 5
+4. **Execute:** Click "Authorize Transaction". 
+5. **Explain:** Point out to the audience that the smart contract just seamlessly deducted 5kg from the parent batch, and linked that exact decrement to the Citizen's hash, making double-claiming impossible.
+
+---
+
+## ACT IV: Unbreakable Traceability (Back to Window 1)
+**Identity:** Government Authority (`admin`)
+**Context to Audience:** The grand finale. Proving that every single action across all three drastically different roles exists permanently.
+
+1. **Return** to Window 1 (Government).
+2. **Action:** Click on `Audit Logs` in the sidebar.
+3. **Observe:** Walk the audience through the exact granular actions, bottom-to-top:
+   *   📦 `StockCreated` (Govt Minted)
+   *   🚚 `StockTransferred` (Govt to District)
+   *   🚚 `StockTransferred` (District to Shop)
+   *   🛍️ `RationIssued` (Shop to Citizen)
+4. **Concluding Statement:** Point to the raw Hyperledger Fabric `TxID` hashes generated next to each event. Explain: *"Because this is a true decentralized blockchain, no rogue shopkeeper, corrupt middleman, or outside hacker can ever rewrite or alter the timeline of that exact bag of grain. The mathematics of the consensus enforce the truth."*

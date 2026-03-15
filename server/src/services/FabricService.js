@@ -1,4 +1,4 @@
-const { Gateway, Wallets } = require('fabric-network');
+const { Gateway, Wallets, DefaultEventHandlerStrategies } = require('fabric-network');
 const fs = require('fs');
 const path = require('path');
 
@@ -12,6 +12,10 @@ class FabricService {
     }
 
     async connect(identityLabel = 'GovtAdmin') {
+        if (this.gateway) {
+            this.gateway.disconnect();
+            this.gateway = new Gateway();
+        }
         const walletPath = path.join(process.cwd(), 'wallet');
         const wallet = await Wallets.newFileSystemWallet(walletPath);
 
@@ -23,10 +27,23 @@ class FabricService {
 
         const connectionProfile = JSON.parse(fs.readFileSync(connectionProfilePath, 'utf8'));
 
+        // Dynamically assign client organization
+        if (identityLabel === 'ShopAdmin') {
+            connectionProfile.client.organization = 'ShopMSP';
+        } else if (identityLabel === 'DistrictAdmin') {
+            connectionProfile.client.organization = 'DistrictMSP';
+        } else {
+            connectionProfile.client.organization = 'GovtMSP';
+        }
+
         await this.gateway.connect(connectionProfile, {
             wallet,
             identity: identityLabel,
-            discovery: { enabled: true, asLocalhost: true }
+            discovery: { enabled: false, asLocalhost: true },
+            eventHandlerOptions: {
+                commitTimeout: 300,
+                strategy: DefaultEventHandlerStrategies.NONE
+            }
         });
 
         console.log(`🔗 Fabric Connected as ${identityLabel}`);
@@ -35,14 +52,12 @@ class FabricService {
     }
 
     async submitTransaction(func, ...args) {
-        if (!this.contract) await this.connect();
         console.log(`📡 Submitting to Fabric: ${func}(${args.join(', ')})`);
         const result = await this.contract.submitTransaction(func, ...args);
         return result.toString();
     }
 
     async evaluateTransaction(func, ...args) {
-        if (!this.contract) await this.connect();
         console.log(`🔍 Evaluating in Fabric: ${func}(${args.join(', ')})`);
         const result = await this.contract.evaluateTransaction(func, ...args);
         return result.toString();
