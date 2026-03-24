@@ -1,0 +1,68 @@
+﻿[dotenv@17.3.1] injecting env (0) from ..\.env -- tip: 🤖 agentic secret storage: https://dotenvx.com/as2
+node : MongooseError: The 
+`uri` parameter to 
+`openUri()` must be a 
+string, got "undefined". 
+Make sure the first 
+parameter to 
+`mongoose.connect()` or `m
+ongoose.createConnection()
+` is a string.
+At line:1 char:1
++ node 
+src/scripts/seedUsers.js 
+> seed_error.log 2>&1
++ ~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+~
+    + CategoryInfo        
+      : NotSpecified: (M  
+  ongooseError: ...)` i   
+ s a string.:String) [    
+], RemoteException
+    + FullyQualifiedError 
+   Id : NativeCommandErr  
+  or
+ 
+    at NativeConnection.cr
+eateClient (C:\Users\Shiva
+ni\anti\sampleblockchain\s
+erver\node_modules\mongoos
+e\lib\drivers\node-mongodb
+-native\connection.js:230:
+11)
+    at 
+NativeConnection.openUri (
+C:\Users\Shivani\anti\samp
+leblockchain\server\node_m
+odules\mongoose\lib\connec
+tion.js:1075:34)
+    at Mongoose.connect (C
+:\Users\Shivani\anti\sampl
+eblockchain\server\node_mo
+dules\mongoose\lib\mongoos
+e.js:471:15)
+    at seedUsers (C:\Users
+\Shivani\anti\sampleblockc
+hain\server\src\scripts\se
+edUsers.js:7:24)
+    at Object.<anonymous> 
+(C:\Users\Shivani\anti\sam
+pleblockchain\server\src\s
+cripts\seedUsers.js:47:1)
+    at Module._compile (no
+de:internal/modules/cjs/lo
+ader:1706:14)
+    at Object..js (node:in
+ternal/modules/cjs/loader:
+1839:10)
+    at Module.load (node:i
+nternal/modules/cjs/loader
+:1441:32)
+    at Function._load (nod
+e:internal/modules/cjs/loa
+der:1263:12)
+    at 
+TracingChannel.traceSync (
+node:diagnostics_channel:3
+22:14)

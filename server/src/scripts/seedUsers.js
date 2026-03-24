@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
 const User = require('../models/User');
-require('dotenv').config({ path: '../.env' }); // Adjusted for running from server root or scripts dir
+require('dotenv').config({ path: require('path').resolve(__dirname, '../../.env') }); // Fallback
+require('dotenv').config(); // This will pick up `.env` from server/ when run from server dir
+
 
 const seedUsers = async () => {
     try {

@@ -14,6 +14,7 @@ const IssueRation = () => {
     });
     const [status, setStatus] = useState({ open: false, type: 'success', message: '' });
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isHacking, setIsHacking] = useState(false);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -27,7 +28,8 @@ const IssueRation = () => {
                 },
                 body: JSON.stringify({
                     ...formData,
-                    quantity: parseFloat(formData.quantity)
+                    quantity: parseFloat(formData.quantity),
+                    isHacked: isHacking
                 })
             });
             const data = await res.json();
@@ -109,19 +111,37 @@ const IssueRation = () => {
                                     </Typography>
                                 </Box>
 
-                                <Button
-                                    type="submit" fullWidth variant="contained" size="large"
-                                    disabled={isSubmitting}
-                                    sx={{
-                                        py: 2,
-                                        borderRadius: 2,
-                                        fontWeight: 'bold',
-                                        background: 'linear-gradient(45deg, #1976d2 30%, #2196f3 90%)',
-                                        boxShadow: '0 3px 5px 2px rgba(33, 150, 243, .3)'
-                                    }}
-                                >
-                                    {isSubmitting ? 'Verifying with Ledger...' : 'Authorize Transaction'}
-                                </Button>
+                                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} sx={{ mt: 2 }}>
+                                    <Button
+                                        type="submit" fullWidth variant="contained" size="large"
+                                        disabled={isSubmitting}
+                                        onClick={() => setIsHacking(false)}
+                                        sx={{
+                                            py: 2,
+                                            borderRadius: 2,
+                                            fontWeight: 'bold',
+                                            background: 'linear-gradient(45deg, #1976d2 30%, #2196f3 90%)',
+                                            boxShadow: '0 3px 5px 2px rgba(33, 150, 243, .3)'
+                                        }}
+                                    >
+                                        {isSubmitting && !isHacking ? 'Verifying with Ledger...' : 'Authorize Transaction'}
+                                    </Button>
+
+                                    <Button
+                                        type="submit" fullWidth variant="contained" size="large" color="error"
+                                        disabled={isSubmitting}
+                                        onClick={() => setIsHacking(true)}
+                                        sx={{
+                                            py: 2,
+                                            borderRadius: 2,
+                                            fontWeight: 'bold',
+                                            bgcolor: '#d32f2f',
+                                            boxShadow: '0 3px 5px 2px rgba(211, 47, 47, .3)'
+                                        }}
+                                    >
+                                        {isSubmitting && isHacking ? 'Simulating...' : 'Simulate District Node Hack'}
+                                    </Button>
+                                </Stack>
                             </form>
                         </CardContent>
                     </Card>

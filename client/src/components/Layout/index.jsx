@@ -8,6 +8,7 @@ import AuditLogs from '../../pages/AuditLogs';
 import FraudAlerts from '../../pages/FraudAlerts';
 import TransferStock from '../../pages/TransferStock';
 import OnboardShop from '../../pages/OnboardShop';
+import RegisterCitizen from '../../pages/RegisterCitizen';
 
 const drawerWidth = 240;
 
@@ -25,6 +26,7 @@ const Layout = () => {
         { text: 'Dashboard', icon: '📊', path: '/', roles: ['Govt', 'District', 'Shop'] },
         { text: 'Stock Management', icon: '📦', path: '/stock', roles: ['Govt'] },
         { text: 'Transfer Custody', icon: '🚚', path: '/transfer', roles: ['Govt', 'District'] },
+        { text: 'Register Citizen', icon: '🪪', path: '/register', roles: ['Govt'] },
         { text: 'Onboard Shop', icon: '🏪', path: '/onboard', roles: ['Govt', 'District'] },
         { text: 'Issue Ration', icon: '🛒', path: '/issue', roles: ['Shop'] },
         { text: 'Audit Logs', icon: '📜', path: '/audit', roles: ['Govt', 'District'] },
@@ -116,6 +118,7 @@ const Layout = () => {
                     <Route path="/" element={<Dashboard />} />
                     {allowedItems.find(i => i.path === '/stock') && <Route path="/stock" element={<StockManager />} />}
                     {allowedItems.find(i => i.path === '/transfer') && <Route path="/transfer" element={<TransferStock />} />}
+                    {allowedItems.find(i => i.path === '/register') && <Route path="/register" element={<RegisterCitizen />} />}
                     {allowedItems.find(i => i.path === '/onboard') && <Route path="/onboard" element={<OnboardShop />} />}
                     {allowedItems.find(i => i.path === '/issue') && <Route path="/issue" element={<IssueRation />} />}
                     {allowedItems.find(i => i.path === '/audit') && <Route path="/audit" element={<AuditLogs />} />}

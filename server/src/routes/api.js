@@ -10,5 +10,6 @@ router.post('/transfer', protect, authorize('Govt', 'District'), RationControlle
 router.post('/shop', protect, authorize('Govt', 'District'), RationController.onboardShop);
 router.get('/all', protect, RationController.getAllAssets);
 router.get('/history/:id', protect, RationController.getAssetHistory);
+router.post('/citizen/register', protect, authorize('Govt'), RationController.registerCitizen);
 
 module.exports = router;

@@ -1,0 +1,128 @@
+
+--- Slide 1 ---
+Enterprise Ration Distribution System
+A Permissioned Blockchain Approach for Public Distribution
+
+--- Slide 2 ---
+Problem Identification & Motivation
+Current Challenges
+Significant leakage and black marketing in distribution networks
+"Ghost beneficiaries" systematically siphoning subsidized rations
+Opaque supply chains lacking end-to-end visibility
+Traditional web portals rely on centralized databases with absolute administrator control
+Centralized Vulnerabilities
+SQL/NoSQL databases create single points of failure. Administrators can tamper with data undetectably, compromising integrity and auditability.
+Our Solution
+Replace centralized databases with a distributed, immutable ledger ensuring end-to-end traceability and preventing double-dipping through cryptographic validation.
+
+--- Slide 3 ---
+Related Work & Industry Benchmarks
+Blockchain in SCM
+Saberi et al. (2019) established the value of shared, immutable "chain of custody" for supply chains, providing foundation for our approach.
+Hyperledger Fabric vs. Public Chains
+Ethereum's volatile gas fees and public visibility make it unsuitable for government use. Fabric's Execute-Order-Validate architecture fits enterprise needs perfectly.
+Walmart Food Trust Benchmark
+Modeled after Fabric-based system that reduced traceability time from 7 days to 2.2 seconds—demonstrating real-world scalability.
+Academic Foundation
+Builds upon theoretical "e-Ration" proposals (Jain et al., 2021) by implementing full-stack, working solution with production-ready architecture.
+
+--- Slide 4 ---
+System Architecture Overview
+A multi-layered, fault-tolerant design engineered for government-scale operations and real-time performance.
+Blockchain Layer
+Hyperledger Fabric source of truth with Raft
+API Middleware
+Transaction handling, validation, and routing
+Application & Analytics
+Event-driven UX, dashboards, and reporting
+
+--- Slide 5 ---
+Blockchain Layer: The Foundation
+Hyperledger Fabric v2.5
+Permissioned blockchain utilizing Raft Consensus (Crash Fault Tolerant) across three distinct organizations: Government, District, and Fair Price Shop.
+Execute-Order-Validate Architecture
+Transactions execute first, then order, then validate—ensuring high throughput while maintaining consistency. Membership Service Provider uses X.509 certificates for identity.
+CouchDB State Database
+Rich state-based queries enable instant retrieval of specific district allocations without full ledger scans—critical for audit operations.
+
+--- Slide 6 ---
+Smart Contract Architecture
+01
+Chaincode Structure
+Business logic written in Go (Golang) for high-performance, secure execution on peer nodes.
+02
+CreateStockBatch
+Government nodes mint new digital assets representing physical grain. Every allocation cryptographically signed.
+03
+IssueRation
+Atomic transaction validating shop stock and citizen eligibility simultaneously, preventing duplicates.
+04
+Data Persistence
+Assets stored as JSON documents in CouchDB, enabling rich queries and efficient state retrieval.
+
+--- Slide 7 ---
+Government & Shop Workflows
+Government Minting
+Authorized login → Mint new stock batches → Allocate to districts and shops
+Shop Verification
+Authorized login → Verify citizen identity → Issue ration automatically
+Smart Contract Execution
+Validates eligibility, deducts stock, updates quotas in single atomic operation
+Key Benefits
+Immutable genesis record of all assets
+Automatic quota enforcement prevents fraud
+Real-time stock visibility across entire network
+Security Features
+Cryptographic signatures on all transactions
+Permissioned access via X.509 certificates
+Zero knowledge of ghost beneficiaries possible
+
+--- Slide 8 ---
+API Middleware Layer Design
+Singleton FabricService
+Maintains persistent gRPC connections to Gateway instead of reconnecting per request—dramatically improving efficiency.
+Wallet Management
+Handles identity management via cryptographic wallets, abstracting blockchain complexity from application logic.
+Transaction Submission
+Submits transactions via Fabric SDK with proper endorsement policies and consensus handling.
+Clean code structure organized into Configurations, Controllers, Services, and Models—ensuring maintainability and testability.
+
+--- Slide 9 ---
+Frontend & Analytics Layer
+React.js Dashboard
+Dynamic, role-based MERN interface tailored for different stakeholders. Government views show allocation dashboards while shop interfaces focus on citizen verification.
+Event-Driven Architecture
+Blockchain events caught and cached in local MongoDB for instant, performant analytics without querying the ledger.
+Design Philosophy
+Context API for global state management
+Custom Hooks for blockchain API calls
+Responsive UI ensuring mobile compatibility
+Immediate feedback on transaction endorsement
+100%
+Data Integrity
+Immutable ledger records
+2.2s
+Traceability
+From warehouse to consumer
+0
+Fraud Tolerance
+Automatic quota enforcement
+
+--- Slide 10 ---
+Transparency & Auditability
+Public Tracking Dashboard
+Real-time ledger visibility enables citizens and auditors to trace complete stock lifecycle from warehouse origin to final consumer.
+1
+Genesis
+Government mints stock batch
+2
+Allocation
+District distributes to shops
+3
+Verification
+Citizen identity validated
+4
+Delivery
+Ration issued and recorded
+Impact:
+ Replaces 7-day manual traceability with instant verification, enabling real-time oversight and preventing systematic fraud that currently deprives citizens of subsidized rations.

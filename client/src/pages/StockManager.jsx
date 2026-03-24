@@ -1,4 +1,4 @@
-import { Box, Card, CardContent, Grid, Typography, TextField, Button, MenuItem, Stack, Snackbar, Alert, Chip, Table, TableHead, TableRow, TableCell, TableBody, LinearProgress } from '@mui/material';
+import { Box, Card, CardContent, Grid, Typography, TextField, Button, MenuItem, Stack, Snackbar, Alert, Chip, Table, TableHead, TableRow, TableCell, TableBody, LinearProgress, Dialog, DialogTitle, DialogContent } from '@mui/material';
 import { useState, useEffect } from 'react';
 
 const API_URL = 'http://localhost:3000/api';
@@ -8,6 +8,20 @@ const StockManager = () => {
     const [status, setStatus] = useState({ open: false, type: 'success', message: '' });
     const [assets, setAssets] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [historyModal, setHistoryModal] = useState({ open: false, id: '', data: [] });
+
+    const fetchHistory = async (id) => {
+        try {
+            const res = await fetch(`${API_URL}/history/${id}`, {
+                headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+            });
+            const data = await res.json();
+            const parsed = data.map(v => JSON.parse(v));
+            setHistoryModal({ open: true, id, data: parsed });
+        } catch (e) {
+            setStatus({ open: true, type: 'error', message: 'Failed to fetch history' });
+        }
+    };
 
     const fetchAssets = async () => {
         try {
@@ -108,6 +122,7 @@ const StockManager = () => {
                                             <TableCell sx={{ fontWeight: 'bold' }}>Owner</TableCell>
                                             <TableCell sx={{ fontWeight: 'bold' }}>Status</TableCell>
                                             <TableCell align="right" sx={{ fontWeight: 'bold' }}>Balance</TableCell>
+                                            <TableCell align="right" sx={{ fontWeight: 'bold' }}>Actions</TableCell>
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>
@@ -126,6 +141,9 @@ const StockManager = () => {
                                                 </TableCell>
                                                 <TableCell align="right" sx={{ fontWeight: 'bold', color: 'primary.main' }}>
                                                     {asset.balance?.toLocaleString()} kg
+                                                </TableCell>
+                                                <TableCell align="right">
+                                                    <Button size="small" variant="outlined" color="secondary" onClick={() => fetchHistory(asset.id)}>Provenance</Button>
                                                 </TableCell>
                                             </TableRow>
                                         ))}
@@ -146,6 +164,22 @@ const StockManager = () => {
             <Snackbar open={status.open} autoHideDuration={6000} onClose={() => setStatus({ ...status, open: false })}>
                 <Alert severity={status.type} sx={{ width: '100%' }}>{status.message}</Alert>
             </Snackbar>
+
+            <Dialog open={historyModal.open} onClose={() => setHistoryModal({ open: false, id: '', data: [] })} maxWidth="md" fullWidth>
+                <DialogTitle>Asset Provenance: {historyModal.id}</DialogTitle>
+                <DialogContent>
+                    {historyModal.data.map((state, index) => (
+                        <Card key={index} sx={{ mb: 2, p: 2 }}>
+                            <Typography variant="subtitle2" color="text.secondary">Version {index + 1}</Typography>
+                            <Grid container spacing={2}>
+                                <Grid item xs={6}>Owner: <b>{state.currentOwner}</b></Grid>
+                                <Grid item xs={6}>Status: <b>{state.status}</b></Grid>
+                                <Grid item xs={6}>Balance: <b>{state.balance} kg</b></Grid>
+                            </Grid>
+                        </Card>
+                    ))}
+                </DialogContent>
+            </Dialog>
         </Box>
     );
 };
