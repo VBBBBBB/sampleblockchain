@@ -37,4 +37,5 @@ npm run dev
 ## Features Implemented
 - **Government**: Create Stock Batches (recorded on blockchain)
 - **Shop**: Issue Ration to Citizens (checks quota, deduplicates)
-- **Public**: View Live Ledger of all assets and transactions
+- **Public**: View Live Ledger of all assets and transactions also 
+
